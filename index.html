@@ -79,14 +79,30 @@
       <!-- Stats Summary: "X finished, Y reading, Z to read" -->
       <div id="stats-summary" class="stats-summary" role="status" aria-live="polite" hidden></div>
 
+      <!-- Status Filter Tabs -->
+      <nav class="filter-tabs" aria-label="Filter books by status">
+        <button type="button" class="tab-btn active" data-status="All">
+          All <span class="tab-count" id="count-all">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-status="To read">
+          To read <span class="tab-count" id="count-to-read">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-status="Reading">
+          Reading <span class="tab-count" id="count-reading">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-status="Finished">
+          Finished <span class="tab-count" id="count-finished">0</span>
+        </button>
+      </nav>
+
       <!-- Friendly message shown when no books are in the tracker at all -->
       <div id="empty-state" class="empty-state">
         <p>No books yet. Add your first book using the form above!</p>
       </div>
 
-      <!-- Message shown when search returns zero matches -->
+      <!-- Message shown when search or filter returns zero matches -->
       <div id="no-results-state" class="empty-state" hidden>
-        <p>No books match your search.</p>
+        <p id="no-results-text">No books match your filters.</p>
       </div>
 
       <!-- Container where book cards will be inserted -->

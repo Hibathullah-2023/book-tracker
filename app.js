@@ -1,5 +1,5 @@
 // ==========================================================================
-// Step 5: Book Tracker with Delete, Counts Summary & Mobile Layout
+// Step 7: Book Tracker with Inline Edit (Title & Author)
 // ==========================================================================
 
 // Key name used to store book data in browser localStorage
@@ -49,6 +49,12 @@ function saveBooks() {
 // Master list of book objects (initialized from storage)
 let books = loadBooks();
 
+// Active status filter (defaults to "All")
+let currentStatusFilter = "All";
+
+// ID of the book currently being edited (null if no book is in edit mode)
+let editingBookId = null;
+
 // DOM Element references
 const bookForm = document.getElementById("book-form");
 const titleInput = document.getElementById("book-title");
@@ -57,17 +63,22 @@ const statusSelect = document.getElementById("book-status");
 const formError = document.getElementById("form-error");
 const searchInput = document.getElementById("search-input");
 const statsSummary = document.getElementById("stats-summary");
+const filterTabs = document.querySelectorAll(".tab-btn");
+const countAllEl = document.getElementById("count-all");
+const countToReadEl = document.getElementById("count-to-read");
+const countReadingEl = document.getElementById("count-reading");
+const countFinishedEl = document.getElementById("count-finished");
 const bookList = document.getElementById("book-list");
 const emptyState = document.getElementById("empty-state");
 const noResultsState = document.getElementById("no-results-state");
 
-// Helper: Show an error message above the form
+// Helper: Show an error message above the add form
 function showError(message) {
   formError.textContent = message;
   formError.hidden = false;
 }
 
-// Helper: Clear any visible error message
+// Helper: Clear any visible add form error message
 function clearError() {
   formError.textContent = "";
   formError.hidden = true;
@@ -88,7 +99,6 @@ function getStatusBadgeClass(status) {
 
 // Update a book's status by its unique ID
 function updateBookStatus(bookId, newStatus) {
-  // Find the exact book by unique ID in the master list
   const bookToUpdate = books.find((b) => b.id === bookId);
   if (!bookToUpdate) {
     return;
@@ -100,7 +110,26 @@ function updateBookStatus(bookId, newStatus) {
   // Persist immediately to localStorage
   saveBooks();
 
-  // Re-render list and updated stats (keeps search filter intact)
+  // Re-render list and updated stats (keeps filters intact)
+  renderBooks();
+}
+
+// Update a book's title and author while preserving its position and createdAt
+function updateBookDetails(bookId, newTitle, newAuthor) {
+  const bookToUpdate = books.find((b) => b.id === bookId);
+  if (!bookToUpdate) {
+    return;
+  }
+
+  // Update title and author only
+  bookToUpdate.title = newTitle;
+  bookToUpdate.author = newAuthor;
+
+  // Persist immediately to localStorage
+  saveBooks();
+
+  // Exit edit mode and re-render
+  editingBookId = null;
   renderBooks();
 }
 
@@ -111,38 +140,49 @@ function deleteBook(bookId) {
     return;
   }
 
+  // If this book was currently open in edit mode, clear edit state
+  if (editingBookId === bookId) {
+    editingBookId = null;
+  }
+
   // Filter out the book from the master list
   books = books.filter((b) => b.id !== bookId);
 
   // Persist deletion immediately to localStorage
   saveBooks();
 
-  // Re-render list and stats (works seamlessly while searching)
+  // Re-render list and stats (works seamlessly with active filters)
   renderBooks();
 }
 
-// Calculate and render the overall reading counts
+// Calculate and render reading counts (tabs & summary bar)
 function renderStats() {
-  // If there are no books in the tracker at all, hide the summary
-  if (books.length === 0) {
+  const allCount = books.length;
+  const toReadCount = books.filter((b) => b.status === "To read").length;
+  const readingCount = books.filter((b) => b.status === "Reading").length;
+  const finishedCount = books.filter((b) => b.status === "Finished").length;
+
+  // Update badge counts on the status filter tabs
+  if (countAllEl) countAllEl.textContent = allCount;
+  if (countToReadEl) countToReadEl.textContent = toReadCount;
+  if (countReadingEl) countReadingEl.textContent = readingCount;
+  if (countFinishedEl) countFinishedEl.textContent = finishedCount;
+
+  // If there are no books in the tracker at all, hide the summary bar
+  if (allCount === 0) {
     statsSummary.hidden = true;
     statsSummary.textContent = "";
     return;
   }
 
-  // Count books in the entire list (regardless of active search)
-  const finishedCount = books.filter((b) => b.status === "Finished").length;
-  const readingCount = books.filter((b) => b.status === "Reading").length;
-  const toReadCount = books.filter((b) => b.status === "To read").length;
-
-  // Display summary: e.g. "3 finished, 1 reading, 2 to read"
+  // Display summary bar: e.g. "3 finished, 1 reading, 2 to read"
   statsSummary.hidden = false;
   statsSummary.textContent = `${finishedCount} finished, ${readingCount} reading, ${toReadCount} to read`;
 }
 
-// Render the list of books to the screen (handles search filtering & stats)
+// Render the list of books to the screen (handles search, filter, and edit modes)
 function renderBooks() {
-  // Always update overall stats whenever the view renders
+  // Always update counts whenever the view renders
   renderStats();
 
   // Clear existing list items
@@ -159,16 +199,20 @@ function renderBooks() {
   // 2. Read trimmed, lowercase search query
   const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
-  // 3. Filter books matching title OR author (case-insensitive)
-  const visibleBooks = query
-    ? books.filter((book) => {
-        const titleMatch = book.title.toLowerCase().includes(query);
-        const authorMatch = book.author.toLowerCase().includes(query);
-        return titleMatch || authorMatch;
-      })
-    : books;
+  // 3. Filter books matching BOTH the active status filter AND search query
+  const visibleBooks = books.filter((book) => {
+    const matchesStatus =
+      currentStatusFilter === "All" || book.status === currentStatusFilter;
 
-  // 4. If search query yielded zero matches, show "No books match your search"
+    const matchesSearch =
+      !query ||
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query);
+
+    return matchesStatus && matchesSearch;
+  });
+
+  // 4. If nothing matches the active filters, show "No books match your filters."
   if (visibleBooks.length === 0) {
     noResultsState.hidden = false;
     return;
@@ -177,74 +221,171 @@ function renderBooks() {
 
   // 5. Build and display each visible book card (newest first)
   visibleBooks.forEach((book) => {
-    // Outer card item
     const li = document.createElement("li");
     li.className = "book-card";
 
-    // Container for title and author
-    const infoDiv = document.createElement("div");
-    infoDiv.className = "book-info";
+    // ------------------------------------------------------------------
+    // Case A: Book is currently in EDIT mode
+    // ------------------------------------------------------------------
+    if (editingBookId === book.id) {
+      const editContainer = document.createElement("div");
+      editContainer.className = "edit-form-container";
 
-    // Title element (textContent prevents HTML injection)
-    const titleEl = document.createElement("h3");
-    titleEl.className = "book-title";
-    titleEl.textContent = book.title;
+      // Inline validation error message
+      const editError = document.createElement("div");
+      editError.className = "card-edit-error";
+      editError.hidden = true;
 
-    // Author element (textContent prevents HTML injection)
-    const authorEl = document.createElement("p");
-    authorEl.className = "book-author";
-    authorEl.textContent = "by " + book.author;
+      // Edit title input (using .value avoids HTML injection)
+      const editTitleInput = document.createElement("input");
+      editTitleInput.type = "text";
+      editTitleInput.className = "edit-input";
+      editTitleInput.value = book.title;
+      editTitleInput.placeholder = "Book Title";
+      editTitleInput.setAttribute("aria-label", "Edit title for " + book.title);
 
-    infoDiv.appendChild(titleEl);
-    infoDiv.appendChild(authorEl);
+      // Edit author input (using .value avoids HTML injection)
+      const editAuthorInput = document.createElement("input");
+      editAuthorInput.type = "text";
+      editAuthorInput.className = "edit-input";
+      editAuthorInput.value = book.author;
+      editAuthorInput.placeholder = "Author";
+      editAuthorInput.setAttribute("aria-label", "Edit author for " + book.title);
 
-    // Status badge
-    const badgeEl = document.createElement("span");
-    badgeEl.className = "badge " + getStatusBadgeClass(book.status);
-    badgeEl.textContent = book.status;
+      // Action buttons: Save & Cancel
+      const editActions = document.createElement("div");
+      editActions.className = "edit-actions";
 
-    // Status change dropdown
-    const selectEl = document.createElement("select");
-    selectEl.className = "status-select";
-    selectEl.setAttribute("aria-label", "Change reading status for " + book.title);
+      const saveBtn = document.createElement("button");
+      saveBtn.type = "button";
+      saveBtn.className = "btn-save";
+      saveBtn.textContent = "Save";
 
-    const statuses = ["To read", "Reading", "Finished"];
-    statuses.forEach((statusOption) => {
-      const option = document.createElement("option");
-      option.value = statusOption;
-      option.textContent = statusOption;
-      if (statusOption === book.status) {
-        option.selected = true;
-      }
-      selectEl.appendChild(option);
-    });
+      const cancelBtn = document.createElement("button");
+      cancelBtn.type = "button";
+      cancelBtn.className = "btn-cancel";
+      cancelBtn.textContent = "Cancel";
 
-    // When the user picks a new status, update this book
-    selectEl.addEventListener("change", (event) => {
-      updateBookStatus(book.id, event.target.value);
-    });
+      // Handle saving edits with full validation
+      saveBtn.addEventListener("click", () => {
+        const trimmedTitle = editTitleInput.value.trim();
+        const trimmedAuthor = editAuthorInput.value.trim();
 
-    // Delete button with confirmation
-    const deleteBtn = document.createElement("button");
-    deleteBtn.type = "button";
-    deleteBtn.className = "btn-delete";
-    deleteBtn.setAttribute("aria-label", "Delete " + book.title);
-    deleteBtn.textContent = "Delete";
+        if (!trimmedTitle && !trimmedAuthor) {
+          editError.textContent = "Please enter both a title and an author.";
+          editError.hidden = false;
+          return;
+        }
+        if (!trimmedTitle) {
+          editError.textContent = "Please enter a book title.";
+          editError.hidden = false;
+          return;
+        }
+        if (!trimmedAuthor) {
+          editError.textContent = "Please enter an author name.";
+          editError.hidden = false;
+          return;
+        }
 
-    deleteBtn.addEventListener("click", () => {
-      deleteBook(book.id);
-    });
+        updateBookDetails(book.id, trimmedTitle, trimmedAuthor);
+      });
 
-    // Actions container (badge + dropdown + delete button)
-    const actionsDiv = document.createElement("div");
-    actionsDiv.className = "book-actions";
-    actionsDiv.appendChild(badgeEl);
-    actionsDiv.appendChild(selectEl);
-    actionsDiv.appendChild(deleteBtn);
+      // Handle cancelling edit mode
+      cancelBtn.addEventListener("click", () => {
+        editingBookId = null;
+        renderBooks();
+      });
 
-    // Assemble the card
-    li.appendChild(infoDiv);
-    li.appendChild(actionsDiv);
+      editActions.appendChild(saveBtn);
+      editActions.appendChild(cancelBtn);
+
+      editContainer.appendChild(editError);
+      editContainer.appendChild(editTitleInput);
+      editContainer.appendChild(editAuthorInput);
+      editContainer.appendChild(editActions);
+
+      li.appendChild(editContainer);
+    } else {
+      // ------------------------------------------------------------------
+      // Case B: Regular View mode
+      // ------------------------------------------------------------------
+      const infoDiv = document.createElement("div");
+      infoDiv.className = "book-info";
+
+      // Title element (textContent prevents HTML injection)
+      const titleEl = document.createElement("h3");
+      titleEl.className = "book-title";
+      titleEl.textContent = book.title;
+
+      // Author element (textContent prevents HTML injection)
+      const authorEl = document.createElement("p");
+      authorEl.className = "book-author";
+      authorEl.textContent = "by " + book.author;
+
+      infoDiv.appendChild(titleEl);
+      infoDiv.appendChild(authorEl);
+
+      // Status badge
+      const badgeEl = document.createElement("span");
+      badgeEl.className = "badge " + getStatusBadgeClass(book.status);
+      badgeEl.textContent = book.status;
+
+      // Status change dropdown
+      const selectEl = document.createElement("select");
+      selectEl.className = "status-select";
+      selectEl.setAttribute("aria-label", "Change reading status for " + book.title);
+
+      const statuses = ["To read", "Reading", "Finished"];
+      statuses.forEach((statusOption) => {
+        const option = document.createElement("option");
+        option.value = statusOption;
+        option.textContent = statusOption;
+        if (statusOption === book.status) {
+          option.selected = true;
+        }
+        selectEl.appendChild(option);
+      });
+
+      // When the user picks a new status, update this book
+      selectEl.addEventListener("change", (event) => {
+        updateBookStatus(book.id, event.target.value);
+      });
+
+      // Edit button (switches this card into edit mode)
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "btn-edit";
+      editBtn.setAttribute("aria-label", "Edit " + book.title);
+      editBtn.textContent = "Edit";
+
+      editBtn.addEventListener("click", () => {
+        editingBookId = book.id;
+        renderBooks();
+      });
+
+      // Delete button with confirmation
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "btn-delete";
+      deleteBtn.setAttribute("aria-label", "Delete " + book.title);
+      deleteBtn.textContent = "Delete";
+
+      deleteBtn.addEventListener("click", () => {
+        deleteBook(book.id);
+      });
+
+      // Actions container (badge + dropdown + edit + delete)
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "book-actions";
+      actionsDiv.appendChild(badgeEl);
+      actionsDiv.appendChild(selectEl);
+      actionsDiv.appendChild(editBtn);
+      actionsDiv.appendChild(deleteBtn);
+
+      // Assemble the card
+      li.appendChild(infoDiv);
+      li.appendChild(actionsDiv);
+    }
 
     bookList.appendChild(li);
   });
@@ -253,6 +394,19 @@ function renderBooks() {
 // Live search: filter results as the user types
 searchInput.addEventListener("input", () => {
   renderBooks();
+});
+
+// Status filter tabs: click to switch active status tab
+filterTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    // Update active tab button style
+    filterTabs.forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    // Set current filter and re-render
+    currentStatusFilter = tab.dataset.status;
+    renderBooks();
+  });
 });
 
 // Handle form submission
@@ -296,7 +450,7 @@ bookForm.addEventListener("submit", (event) => {
   // Save the updated master list to localStorage
   saveBooks();
 
-  // Re-render the list on screen (respects active search filter if any)
+  // Re-render the list on screen (respects active search and status filter)
   renderBooks();
 
   // Reset the form inputs and return focus to the title field

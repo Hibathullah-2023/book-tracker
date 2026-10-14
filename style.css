@@ -186,6 +186,61 @@ select:focus {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
+/* Status Filter Tabs */
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px; /* Touch friendly */
+  padding: 0.4rem 0.85rem;
+  background-color: #ffffff;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.tab-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.tab-btn.active {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.08);
+  color: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.1rem 0.5rem;
+  min-width: 1.25rem;
+}
+
+.tab-btn.active .tab-count {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
 /* Accessible hidden label for screen readers */
 .sr-only {
   position: absolute;
@@ -314,7 +369,30 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-/* Delete Button */
+/* Delete & Edit Buttons */
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* Minimum 44px touch target */
+  min-width: 44px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1d4ed8;
+  background-color: #dbeafe;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-edit:hover {
+  background-color: #bfdbfe;
+  color: #1e40af;
+}
+
 .btn-delete {
   display: inline-flex;
   align-items: center;
@@ -340,6 +418,89 @@ select:focus {
 
 .btn-delete:active {
   background-color: #fca5a5;
+}
+
+/* Inline Edit Card View */
+.edit-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.card-edit-error {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.825rem;
+}
+
+.edit-input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 16px; /* 16px prevents mobile zoom */
+  font-family: inherit;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #ffffff;
+  background-color: #16a34a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-save:hover {
+  background-color: #15803d;
+}
+
+.btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #4b5563;
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background-color: #d1d5db;
 }
 
 /* ==========================================================================
@@ -395,11 +556,16 @@ select:focus {
   .book-actions .status-select {
     order: 2;
     flex: 1;
-    min-width: 120px;
+    min-width: 110px;
+  }
+
+  .book-actions .btn-edit {
+    order: 3;
+    flex-shrink: 0;
   }
 
   .book-actions .btn-delete {
-    order: 3;
+    order: 4;
     flex-shrink: 0;
   }
 }
