@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Tracker</title>
+  <!-- Google Font: Inter for modern, clean typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-container">
+    <header class="app-header">
+      <h1>📚 Book Tracker</h1>
+      <p class="subtitle">Keep track of the books you want to read, are reading, or have finished.</p>
+    </header>
+
+    <!-- Form Section: Add a new book -->
+    <section class="card form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading">Add a Book</h2>
+
+      <!-- General error box for validation feedback -->
+      <div id="form-error" class="error-banner" role="alert" hidden></div>
+
+      <form id="book-form" novalidate>
+        <div class="form-group">
+          <label for="book-title">Book Title <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="text"
+            id="book-title"
+            name="title"
+            placeholder="e.g. To Kill a Mockingbird"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="book-author">Author <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="text"
+            id="book-author"
+            name="author"
+            placeholder="e.g. Harper Lee"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="book-status">Status</label>
+          <select id="book-status" name="status">
+            <option value="To read">To read</option>
+            <option value="Reading">Reading</option>
+            <option value="Finished">Finished</option>
+          </select>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary">Add Book</button>
+      </form>
+    </section>
+
+    <!-- List Section: Displays added books -->
+    <section class="list-section" aria-labelledby="list-heading">
+      <h2 id="list-heading">Reading List</h2>
+
+      <!-- Friendly message shown when no books are present -->
+      <div id="empty-state" class="empty-state">
+        <p>No books yet. Add your first book using the form above!</p>
+      </div>
+
+      <!-- Container where book cards will be inserted -->
+      <ul id="book-list" class="book-list" aria-live="polite"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
