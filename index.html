@@ -61,6 +61,21 @@
           </select>
         </div>
 
+        <!-- Optional Short Notes Field -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="book-notes">Notes <span class="optional">(optional)</span></label>
+            <span class="char-counter" id="notes-counter" aria-live="polite">0 / 300</span>
+          </div>
+          <textarea
+            id="book-notes"
+            name="notes"
+            maxlength="300"
+            rows="3"
+            placeholder="Add a favorite quote, thought, or review..."
+          ></textarea>
+        </div>
+
         <button type="submit" id="submit-btn" class="btn btn-primary">Add Book</button>
       </form>
     </section>

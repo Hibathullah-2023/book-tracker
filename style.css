@@ -234,7 +234,8 @@ label {
 /* Form Inputs & Selects: 16px font-size prevents iOS zoom */
 input[type="text"],
 input[type="search"],
-select {
+select,
+textarea {
   width: 100%;
   min-height: 44px;
   padding: 0.65rem 0.85rem;
@@ -247,12 +248,36 @@ select {
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
+textarea {
+  min-height: 75px;
+  resize: vertical;
+}
+
 input[type="text"]:focus,
 input[type="search"]:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.optional {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.char-counter {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* Primary Button */
@@ -453,6 +478,29 @@ select:focus {
   color: var(--text-sub);
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+/* Book Card Notes */
+.book-notes {
+  font-size: 0.875rem;
+  color: var(--text-sub);
+  background-color: var(--bg-secondary);
+  border-left: 3px solid #3b82f6;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0 6px 6px 0;
+  margin-top: 0.35rem;
+  white-space: pre-wrap; /* Keeps line breaks readable */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+/* Finished Date */
+.book-finished-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 0.15rem;
 }
 
 /* Status Badges */

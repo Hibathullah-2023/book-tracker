@@ -72,8 +72,17 @@ const countFinishedEl = document.getElementById("count-finished");
 const bookList = document.getElementById("book-list");
 const emptyState = document.getElementById("empty-state");
 const noResultsState = document.getElementById("no-results-state");
+const notesInput = document.getElementById("book-notes");
+const notesCounter = document.getElementById("notes-counter");
 const themeToggleBtn = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
+
+// Update character counter as user types into the Notes textarea
+if (notesInput && notesCounter) {
+  notesInput.addEventListener("input", () => {
+    notesCounter.textContent = `${notesInput.value.length} / 300`;
+  });
+}
 
 // Apply light or dark theme to root element and update toggle icon
 function applyTheme(theme) {
@@ -127,11 +136,38 @@ function getStatusBadgeClass(status) {
   }
 }
 
+// Helper: Format timestamp into "14 Oct 2026"
+function formatFinishedDate(timestamp) {
+  if (!timestamp) return "";
+  try {
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }).format(date);
+  } catch (error) {
+    return "";
+  }
+}
+
 // Update a book's status by its unique ID
 function updateBookStatus(bookId, newStatus) {
   const bookToUpdate = books.find((b) => b.id === bookId);
   if (!bookToUpdate) {
     return;
+  }
+
+  // If changing to Finished, record timestamp
+  if (newStatus === "Finished") {
+    // Only set finishedAt if it wasn't already finished or missing
+    if (bookToUpdate.status !== "Finished" || !bookToUpdate.finishedAt) {
+      bookToUpdate.finishedAt = Date.now();
+    }
+  } else {
+    // If status changes away from Finished, remove finishedAt
+    delete bookToUpdate.finishedAt;
   }
 
   // Update status property
@@ -144,16 +180,19 @@ function updateBookStatus(bookId, newStatus) {
   renderBooks();
 }
 
-// Update a book's title and author while preserving its position and createdAt
-function updateBookDetails(bookId, newTitle, newAuthor) {
+// Update a book's title, author, and optional notes while preserving its position and createdAt
+function updateBookDetails(bookId, newTitle, newAuthor, newNotes) {
   const bookToUpdate = books.find((b) => b.id === bookId);
   if (!bookToUpdate) {
     return;
   }
 
-  // Update title and author only
+  // Update properties
   bookToUpdate.title = newTitle;
   bookToUpdate.author = newAuthor;
+  if (newNotes !== undefined) {
+    bookToUpdate.notes = newNotes;
+  }
 
   // Persist immediately to localStorage
   saveBooks();
@@ -299,6 +338,15 @@ function renderBooks() {
       editAuthorInput.placeholder = "Author";
       editAuthorInput.setAttribute("aria-label", "Edit author for " + book.title);
 
+      // Edit notes textarea (optional)
+      const editNotesInput = document.createElement("textarea");
+      editNotesInput.className = "edit-input";
+      editNotesInput.rows = 2;
+      editNotesInput.maxLength = 300;
+      editNotesInput.value = book.notes || "";
+      editNotesInput.placeholder = "Notes (optional, max 300 chars)";
+      editNotesInput.setAttribute("aria-label", "Edit notes for " + book.title);
+
       // Action buttons: Save & Cancel
       const editActions = document.createElement("div");
       editActions.className = "edit-actions";
@@ -334,7 +382,7 @@ function renderBooks() {
           return;
         }
 
-        updateBookDetails(book.id, trimmedTitle, trimmedAuthor);
+        updateBookDetails(book.id, trimmedTitle, trimmedAuthor, editNotesInput.value.trim());
       });
 
       // Handle cancelling edit mode
@@ -349,6 +397,7 @@ function renderBooks() {
       editContainer.appendChild(editError);
       editContainer.appendChild(editTitleInput);
       editContainer.appendChild(editAuthorInput);
+      editContainer.appendChild(editNotesInput);
       editContainer.appendChild(editActions);
 
       li.appendChild(editContainer);
@@ -371,6 +420,25 @@ function renderBooks() {
 
       infoDiv.appendChild(titleEl);
       infoDiv.appendChild(authorEl);
+
+      // Finished date: ONLY visible when status is Finished and finishedAt exists
+      if (book.status === "Finished" && book.finishedAt) {
+        const formattedDate = formatFinishedDate(book.finishedAt);
+        if (formattedDate) {
+          const finishedDateEl = document.createElement("p");
+          finishedDateEl.className = "book-finished-date";
+          finishedDateEl.textContent = "Finished on " + formattedDate;
+          infoDiv.appendChild(finishedDateEl);
+        }
+      }
+
+      // Optional short note (ONLY displayed if a note exists)
+      if (book.notes && book.notes.trim()) {
+        const notesEl = document.createElement("p");
+        notesEl.className = "book-notes";
+        notesEl.textContent = book.notes; // Safe from HTML injection
+        infoDiv.appendChild(notesEl);
+      }
 
       // Star rating: ONLY visible when book status is "Finished"
       if (book.status === "Finished") {
@@ -528,13 +596,19 @@ bookForm.addEventListener("submit", (event) => {
     return;
   }
 
+  // Get optional notes (trimmed)
+  const trimmedNotes = notesInput ? notesInput.value.trim() : "";
+
   // Create book object with a guaranteed unique ID
+  const isFinished = statusSelect.value === "Finished";
   const newBook = {
     id: generateId(),
     title: trimmedTitle,
     author: trimmedAuthor,
     status: statusSelect.value,
     rating: 0,
+    notes: trimmedNotes,
+    finishedAt: isFinished ? Date.now() : null,
     createdAt: Date.now()
   };
 
@@ -547,8 +621,11 @@ bookForm.addEventListener("submit", (event) => {
   // Re-render the list on screen (respects active search and status filter)
   renderBooks();
 
-  // Reset the form inputs and return focus to the title field
+  // Reset the form inputs, reset character counter, and return focus to the title field
   bookForm.reset();
+  if (notesCounter) {
+    notesCounter.textContent = "0 / 300";
+  }
   titleInput.focus();
 });
 
