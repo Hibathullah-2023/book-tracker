@@ -1,5 +1,5 @@
 // ==========================================================================
-// Step 4: Book Tracker with Search & Filtering
+// Step 5: Book Tracker with Delete, Counts Summary & Mobile Layout
 // ==========================================================================
 
 // Key name used to store book data in browser localStorage
@@ -46,24 +46,6 @@ function saveBooks() {
   }
 }
 
-// Update a book's status by its unique ID
-function updateBookStatus(bookId, newStatus) {
-  // Find the exact book by unique ID in the master list
-  const bookToUpdate = books.find((b) => b.id === bookId);
-  if (!bookToUpdate) {
-    return;
-  }
-
-  // Update status property
-  bookToUpdate.status = newStatus;
-
-  // Persist immediately to localStorage
-  saveBooks();
-
-  // Re-render list to reflect changes (keeps current search filter intact)
-  renderBooks();
-}
-
 // Master list of book objects (initialized from storage)
 let books = loadBooks();
 
@@ -74,6 +56,7 @@ const authorInput = document.getElementById("book-author");
 const statusSelect = document.getElementById("book-status");
 const formError = document.getElementById("form-error");
 const searchInput = document.getElementById("search-input");
+const statsSummary = document.getElementById("stats-summary");
 const bookList = document.getElementById("book-list");
 const emptyState = document.getElementById("empty-state");
 const noResultsState = document.getElementById("no-results-state");
@@ -103,9 +86,66 @@ function getStatusBadgeClass(status) {
   }
 }
 
-// Render the list of books to the screen (handles search filtering)
+// Update a book's status by its unique ID
+function updateBookStatus(bookId, newStatus) {
+  // Find the exact book by unique ID in the master list
+  const bookToUpdate = books.find((b) => b.id === bookId);
+  if (!bookToUpdate) {
+    return;
+  }
+
+  // Update status property
+  bookToUpdate.status = newStatus;
+
+  // Persist immediately to localStorage
+  saveBooks();
+
+  // Re-render list and updated stats (keeps search filter intact)
+  renderBooks();
+}
+
+// Delete a book by its unique ID with confirmation
+function deleteBook(bookId) {
+  const confirmed = window.confirm("Delete this book?");
+  if (!confirmed) {
+    return;
+  }
+
+  // Filter out the book from the master list
+  books = books.filter((b) => b.id !== bookId);
+
+  // Persist deletion immediately to localStorage
+  saveBooks();
+
+  // Re-render list and stats (works seamlessly while searching)
+  renderBooks();
+}
+
+// Calculate and render the overall reading counts
+function renderStats() {
+  // If there are no books in the tracker at all, hide the summary
+  if (books.length === 0) {
+    statsSummary.hidden = true;
+    statsSummary.textContent = "";
+    return;
+  }
+
+  // Count books in the entire list (regardless of active search)
+  const finishedCount = books.filter((b) => b.status === "Finished").length;
+  const readingCount = books.filter((b) => b.status === "Reading").length;
+  const toReadCount = books.filter((b) => b.status === "To read").length;
+
+  // Display summary: e.g. "3 finished, 1 reading, 2 to read"
+  statsSummary.hidden = false;
+  statsSummary.textContent = `${finishedCount} finished, ${readingCount} reading, ${toReadCount} to read`;
+}
+
+// Render the list of books to the screen (handles search filtering & stats)
 function renderBooks() {
-  // Clear the existing list items
+  // Always update overall stats whenever the view renders
+  renderStats();
+
+  // Clear existing list items
   bookList.innerHTML = "";
 
   // 1. If master list is completely empty, show empty state message
@@ -184,11 +224,23 @@ function renderBooks() {
       updateBookStatus(book.id, event.target.value);
     });
 
-    // Actions container (badge + dropdown)
+    // Delete button with confirmation
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "btn-delete";
+    deleteBtn.setAttribute("aria-label", "Delete " + book.title);
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.addEventListener("click", () => {
+      deleteBook(book.id);
+    });
+
+    // Actions container (badge + dropdown + delete button)
     const actionsDiv = document.createElement("div");
     actionsDiv.className = "book-actions";
     actionsDiv.appendChild(badgeEl);
     actionsDiv.appendChild(selectEl);
+    actionsDiv.appendChild(deleteBtn);
 
     // Assemble the card
     li.appendChild(infoDiv);
