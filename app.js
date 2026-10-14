@@ -1,5 +1,5 @@
 // ==========================================================================
-// Step 3: Book Tracker with Status Updates & LocalStorage
+// Step 4: Book Tracker with Search & Filtering
 // ==========================================================================
 
 // Key name used to store book data in browser localStorage
@@ -48,7 +48,7 @@ function saveBooks() {
 
 // Update a book's status by its unique ID
 function updateBookStatus(bookId, newStatus) {
-  // Find the exact book by unique ID
+  // Find the exact book by unique ID in the master list
   const bookToUpdate = books.find((b) => b.id === bookId);
   if (!bookToUpdate) {
     return;
@@ -60,7 +60,7 @@ function updateBookStatus(bookId, newStatus) {
   // Persist immediately to localStorage
   saveBooks();
 
-  // Re-render list to reflect changes (keeps the exact same list order)
+  // Re-render list to reflect changes (keeps current search filter intact)
   renderBooks();
 }
 
@@ -73,8 +73,10 @@ const titleInput = document.getElementById("book-title");
 const authorInput = document.getElementById("book-author");
 const statusSelect = document.getElementById("book-status");
 const formError = document.getElementById("form-error");
+const searchInput = document.getElementById("search-input");
 const bookList = document.getElementById("book-list");
 const emptyState = document.getElementById("empty-state");
+const noResultsState = document.getElementById("no-results-state");
 
 // Helper: Show an error message above the form
 function showError(message) {
@@ -101,34 +103,54 @@ function getStatusBadgeClass(status) {
   }
 }
 
-// Render the list of books to the screen
+// Render the list of books to the screen (handles search filtering)
 function renderBooks() {
   // Clear the existing list items
   bookList.innerHTML = "";
 
-  // Show or hide the empty list message
+  // 1. If master list is completely empty, show empty state message
   if (books.length === 0) {
     emptyState.hidden = false;
+    noResultsState.hidden = true;
     return;
   }
   emptyState.hidden = true;
 
-  // Build and display each book card (newest first)
-  books.forEach((book) => {
-    // 1. Create outer card item
+  // 2. Read trimmed, lowercase search query
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+  // 3. Filter books matching title OR author (case-insensitive)
+  const visibleBooks = query
+    ? books.filter((book) => {
+        const titleMatch = book.title.toLowerCase().includes(query);
+        const authorMatch = book.author.toLowerCase().includes(query);
+        return titleMatch || authorMatch;
+      })
+    : books;
+
+  // 4. If search query yielded zero matches, show "No books match your search"
+  if (visibleBooks.length === 0) {
+    noResultsState.hidden = false;
+    return;
+  }
+  noResultsState.hidden = true;
+
+  // 5. Build and display each visible book card (newest first)
+  visibleBooks.forEach((book) => {
+    // Outer card item
     const li = document.createElement("li");
     li.className = "book-card";
 
-    // 2. Create container for title and author
+    // Container for title and author
     const infoDiv = document.createElement("div");
     infoDiv.className = "book-info";
 
-    // 3. Title element (textContent prevents HTML injection)
+    // Title element (textContent prevents HTML injection)
     const titleEl = document.createElement("h3");
     titleEl.className = "book-title";
     titleEl.textContent = book.title;
 
-    // 4. Author element (textContent prevents HTML injection)
+    // Author element (textContent prevents HTML injection)
     const authorEl = document.createElement("p");
     authorEl.className = "book-author";
     authorEl.textContent = "by " + book.author;
@@ -136,12 +158,12 @@ function renderBooks() {
     infoDiv.appendChild(titleEl);
     infoDiv.appendChild(authorEl);
 
-    // 5. Status badge
+    // Status badge
     const badgeEl = document.createElement("span");
     badgeEl.className = "badge " + getStatusBadgeClass(book.status);
     badgeEl.textContent = book.status;
 
-    // 6. Status change dropdown
+    // Status change dropdown
     const selectEl = document.createElement("select");
     selectEl.className = "status-select";
     selectEl.setAttribute("aria-label", "Change reading status for " + book.title);
@@ -162,7 +184,7 @@ function renderBooks() {
       updateBookStatus(book.id, event.target.value);
     });
 
-    // 7. Actions container (badge + dropdown)
+    // Actions container (badge + dropdown)
     const actionsDiv = document.createElement("div");
     actionsDiv.className = "book-actions";
     actionsDiv.appendChild(badgeEl);
@@ -175,6 +197,11 @@ function renderBooks() {
     bookList.appendChild(li);
   });
 }
+
+// Live search: filter results as the user types
+searchInput.addEventListener("input", () => {
+  renderBooks();
+});
 
 // Handle form submission
 bookForm.addEventListener("submit", (event) => {
@@ -211,13 +238,13 @@ bookForm.addEventListener("submit", (event) => {
     createdAt: Date.now()
   };
 
-  // Add the new book to the front of the array (newest first)
+  // Add the new book to the front of the master array (newest first)
   books.unshift(newBook);
 
-  // Save the updated list to localStorage
+  // Save the updated master list to localStorage
   saveBooks();
 
-  // Re-render the list on screen
+  // Re-render the list on screen (respects active search filter if any)
   renderBooks();
 
   // Reset the form inputs and return focus to the title field

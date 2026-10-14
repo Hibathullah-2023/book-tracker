@@ -62,11 +62,28 @@
 
     <!-- List Section: Displays added books -->
     <section class="list-section" aria-labelledby="list-heading">
-      <h2 id="list-heading">Reading List</h2>
+      <div class="list-header">
+        <h2 id="list-heading">Reading List</h2>
+        <!-- Search bar -->
+        <div class="search-box">
+          <label for="search-input" class="sr-only">Search books</label>
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search by title or author..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
 
-      <!-- Friendly message shown when no books are present -->
+      <!-- Friendly message shown when no books are in the tracker at all -->
       <div id="empty-state" class="empty-state">
         <p>No books yet. Add your first book using the form above!</p>
+      </div>
+
+      <!-- Message shown when search returns zero matches -->
+      <div id="no-results-state" class="empty-state" hidden>
+        <p>No books match your search.</p>
       </div>
 
       <!-- Container where book cards will be inserted -->
