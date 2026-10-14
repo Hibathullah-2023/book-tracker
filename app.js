@@ -23,9 +23,23 @@ function loadBooks() {
 
     const parsedData = JSON.parse(rawData);
 
-    // Ensure the data is actually an Array before using it
+    // Ensure the data is an Array and filter only valid book objects
     if (Array.isArray(parsedData)) {
-      return parsedData;
+      const validStatuses = ["To read", "Reading", "Finished"];
+      return parsedData.filter((item) => {
+        return (
+          item !== null &&
+          typeof item === "object" &&
+          typeof item.id === "string" &&
+          item.id.trim() !== "" &&
+          typeof item.title === "string" &&
+          item.title.trim() !== "" &&
+          typeof item.author === "string" &&
+          item.author.trim() !== "" &&
+          typeof item.status === "string" &&
+          validStatuses.includes(item.status)
+        );
+      });
     }
 
     console.warn("Stored data is not a valid list. Starting fresh.");
@@ -180,6 +194,14 @@ function updateBookStatus(bookId, newStatus) {
 
   // Re-render list and updated stats (keeps filters intact)
   renderBooks();
+
+  // Restore focus to that book's status dropdown (or fallback to search box if filtered out)
+  const targetSelect = document.querySelector(`.status-select[data-book-id="${bookId}"]`);
+  if (targetSelect) {
+    targetSelect.focus();
+  } else if (searchInput) {
+    searchInput.focus();
+  }
 }
 
 // Update a book's title, author, and optional notes while preserving its position and createdAt
@@ -202,6 +224,12 @@ function updateBookDetails(bookId, newTitle, newAuthor, newNotes) {
   // Exit edit mode and re-render
   editingBookId = null;
   renderBooks();
+
+  // Restore focus to that book's Edit button
+  const targetEditBtn = document.querySelector(`.btn-edit[data-book-id="${bookId}"]`);
+  if (targetEditBtn) {
+    targetEditBtn.focus();
+  }
 }
 
 // Update a book's star rating (1-5 or 0 for cleared)
@@ -241,6 +269,11 @@ function deleteBook(bookId) {
 
   // Re-render list and stats (works seamlessly with active filters)
   renderBooks();
+
+  // Move focus to the search box so focus is not lost
+  if (searchInput) {
+    searchInput.focus();
+  }
 }
 
 // Calculate and render reading counts (tabs & summary bar)
@@ -390,8 +423,13 @@ function renderBooks() {
 
       // Handle cancelling edit mode
       cancelBtn.addEventListener("click", () => {
+        const bookIdToFocus = book.id;
         editingBookId = null;
         renderBooks();
+        const targetEditBtn = document.querySelector(`.btn-edit[data-book-id="${bookIdToFocus}"]`);
+        if (targetEditBtn) {
+          targetEditBtn.focus();
+        }
       });
 
       editActions.appendChild(saveBtn);
@@ -469,6 +507,8 @@ function renderBooks() {
           starBtn.type = "button";
           starBtn.className = "star-btn" + (i <= currentRating ? " filled" : "");
           starBtn.textContent = "★";
+          starBtn.dataset.bookId = book.id;
+          starBtn.dataset.star = i;
 
           const label =
             i === currentRating
@@ -480,6 +520,12 @@ function renderBooks() {
           starBtn.addEventListener("click", () => {
             const nextRating = book.rating === i ? 0 : i;
             updateBookRating(book.id, nextRating);
+            const targetStar = document.querySelector(
+              `.star-btn[data-book-id="${book.id}"][data-star="${i}"]`
+            );
+            if (targetStar) {
+              targetStar.focus();
+            }
           });
 
           starsGroup.appendChild(starBtn);
@@ -497,6 +543,7 @@ function renderBooks() {
       // Status change dropdown
       const selectEl = document.createElement("select");
       selectEl.className = "status-select";
+      selectEl.dataset.bookId = book.id;
       selectEl.setAttribute("aria-label", "Change reading status for " + book.title);
 
       const statuses = ["To read", "Reading", "Finished"];
@@ -519,6 +566,7 @@ function renderBooks() {
       const editBtn = document.createElement("button");
       editBtn.type = "button";
       editBtn.className = "btn-edit";
+      editBtn.dataset.bookId = book.id;
       editBtn.setAttribute("aria-label", "Edit " + book.title);
       editBtn.textContent = "Edit";
 
