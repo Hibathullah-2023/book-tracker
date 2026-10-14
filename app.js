@@ -1,9 +1,14 @@
 // ==========================================================================
-// Step 2: Book Tracker with LocalStorage Persistence
+// Step 3: Book Tracker with Status Updates & LocalStorage
 // ==========================================================================
 
 // Key name used to store book data in browser localStorage
 const STORAGE_KEY = "bookTracker.books";
+
+// Helper: Generate a unique ID (combines timestamp + random string to guarantee uniqueness)
+function generateId() {
+  return "book-" + Date.now() + "-" + Math.random().toString(36).substring(2, 9);
+}
 
 // Load books from localStorage safely with error handling
 function loadBooks() {
@@ -39,6 +44,24 @@ function saveBooks() {
     console.error("Could not save books to localStorage:", error);
     showError("Warning: Could not save books. Local storage might be full or disabled.");
   }
+}
+
+// Update a book's status by its unique ID
+function updateBookStatus(bookId, newStatus) {
+  // Find the exact book by unique ID
+  const bookToUpdate = books.find((b) => b.id === bookId);
+  if (!bookToUpdate) {
+    return;
+  }
+
+  // Update status property
+  bookToUpdate.status = newStatus;
+
+  // Persist immediately to localStorage
+  saveBooks();
+
+  // Re-render list to reflect changes (keeps the exact same list order)
+  renderBooks();
 }
 
 // Master list of book objects (initialized from storage)
@@ -118,9 +141,36 @@ function renderBooks() {
     badgeEl.className = "badge " + getStatusBadgeClass(book.status);
     badgeEl.textContent = book.status;
 
+    // 6. Status change dropdown
+    const selectEl = document.createElement("select");
+    selectEl.className = "status-select";
+    selectEl.setAttribute("aria-label", "Change reading status for " + book.title);
+
+    const statuses = ["To read", "Reading", "Finished"];
+    statuses.forEach((statusOption) => {
+      const option = document.createElement("option");
+      option.value = statusOption;
+      option.textContent = statusOption;
+      if (statusOption === book.status) {
+        option.selected = true;
+      }
+      selectEl.appendChild(option);
+    });
+
+    // When the user picks a new status, update this book
+    selectEl.addEventListener("change", (event) => {
+      updateBookStatus(book.id, event.target.value);
+    });
+
+    // 7. Actions container (badge + dropdown)
+    const actionsDiv = document.createElement("div");
+    actionsDiv.className = "book-actions";
+    actionsDiv.appendChild(badgeEl);
+    actionsDiv.appendChild(selectEl);
+
     // Assemble the card
     li.appendChild(infoDiv);
-    li.appendChild(badgeEl);
+    li.appendChild(actionsDiv);
 
     bookList.appendChild(li);
   });
@@ -152,9 +202,9 @@ bookForm.addEventListener("submit", (event) => {
     return;
   }
 
-  // Create book object matching the agreed data structure
+  // Create book object with a guaranteed unique ID
   const newBook = {
-    id: "book-" + Date.now(),
+    id: generateId(),
     title: trimmedTitle,
     author: trimmedAuthor,
     status: statusSelect.value,
