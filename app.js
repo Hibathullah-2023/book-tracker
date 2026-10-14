@@ -1,9 +1,48 @@
 // ==========================================================================
-// Step 1: In-Memory Book Tracker
+// Step 2: Book Tracker with LocalStorage Persistence
 // ==========================================================================
 
-// In-memory array to store book objects (resets on refresh for now)
-const books = [];
+// Key name used to store book data in browser localStorage
+const STORAGE_KEY = "bookTracker.books";
+
+// Load books from localStorage safely with error handling
+function loadBooks() {
+  try {
+    const rawData = localStorage.getItem(STORAGE_KEY);
+
+    // If nothing has been saved yet, start with an empty array
+    if (!rawData) {
+      return [];
+    }
+
+    const parsedData = JSON.parse(rawData);
+
+    // Ensure the data is actually an Array before using it
+    if (Array.isArray(parsedData)) {
+      return parsedData;
+    }
+
+    console.warn("Stored data is not a valid list. Starting fresh.");
+    return [];
+  } catch (error) {
+    // If JSON is broken or localStorage is restricted, fallback gracefully
+    console.error("Could not read books from localStorage:", error);
+    return [];
+  }
+}
+
+// Save the current books array into localStorage safely
+function saveBooks() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+  } catch (error) {
+    console.error("Could not save books to localStorage:", error);
+    showError("Warning: Could not save books. Local storage might be full or disabled.");
+  }
+}
+
+// Master list of book objects (initialized from storage)
+let books = loadBooks();
 
 // DOM Element references
 const bookForm = document.getElementById("book-form");
@@ -51,7 +90,7 @@ function renderBooks() {
   }
   emptyState.hidden = true;
 
-  // Build and display each book card
+  // Build and display each book card (newest first)
   books.forEach((book) => {
     // 1. Create outer card item
     const li = document.createElement("li");
@@ -125,6 +164,9 @@ bookForm.addEventListener("submit", (event) => {
   // Add the new book to the front of the array (newest first)
   books.unshift(newBook);
 
+  // Save the updated list to localStorage
+  saveBooks();
+
   // Re-render the list on screen
   renderBooks();
 
@@ -133,5 +175,5 @@ bookForm.addEventListener("submit", (event) => {
   titleInput.focus();
 });
 
-// Initial render when page first loads
+// Initial render on page open (loads saved books from storage)
 renderBooks();
