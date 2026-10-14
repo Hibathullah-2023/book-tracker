@@ -4,6 +4,7 @@
 
 // Key name used to store book data in browser localStorage
 const STORAGE_KEY = "bookTracker.books";
+const THEME_KEY = "bookTracker.theme";
 
 // Helper: Generate a unique ID (combines timestamp + random string to guarantee uniqueness)
 function generateId() {
@@ -71,6 +72,35 @@ const countFinishedEl = document.getElementById("count-finished");
 const bookList = document.getElementById("book-list");
 const emptyState = document.getElementById("empty-state");
 const noResultsState = document.getElementById("no-results-state");
+const themeToggleBtn = document.getElementById("theme-toggle");
+const themeIcon = document.getElementById("theme-icon");
+
+// Apply light or dark theme to root element and update toggle icon
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  if (themeIcon) {
+    themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+  if (themeToggleBtn) {
+    themeToggleBtn.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+    );
+  }
+}
+
+// Initialize theme from saved localStorage setting or system prefers-color-scheme
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme === "dark" || savedTheme === "light") {
+    applyTheme(savedTheme);
+    return;
+  }
+
+  // Detect system color scheme preference
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(prefersDark ? "dark" : "light");
+}
 
 // Helper: Show an error message above the add form
 function showError(message) {
@@ -130,6 +160,23 @@ function updateBookDetails(bookId, newTitle, newAuthor) {
 
   // Exit edit mode and re-render
   editingBookId = null;
+  renderBooks();
+}
+
+// Update a book's star rating (1-5 or 0 for cleared)
+function updateBookRating(bookId, newRating) {
+  const bookToUpdate = books.find((b) => b.id === bookId);
+  if (!bookToUpdate) {
+    return;
+  }
+
+  // Update rating
+  bookToUpdate.rating = newRating;
+
+  // Persist immediately to localStorage
+  saveBooks();
+
+  // Re-render
   renderBooks();
 }
 
@@ -325,6 +372,52 @@ function renderBooks() {
       infoDiv.appendChild(titleEl);
       infoDiv.appendChild(authorEl);
 
+      // Star rating: ONLY visible when book status is "Finished"
+      if (book.status === "Finished") {
+        const ratingBar = document.createElement("div");
+        ratingBar.className = "rating-bar";
+
+        const ratingLabel = document.createElement("span");
+        ratingLabel.className = "rating-label";
+        ratingLabel.textContent = "Rating:";
+        ratingBar.appendChild(ratingLabel);
+
+        const starsGroup = document.createElement("div");
+        starsGroup.className = "stars-group";
+        starsGroup.setAttribute("role", "group");
+        starsGroup.setAttribute(
+          "aria-label",
+          `Rating for ${book.title}: ${book.rating ? book.rating + " of 5 stars" : "Not rated"}`
+        );
+
+        // Safe fallback for older books without rating property
+        const currentRating = book.rating || 0;
+
+        for (let i = 1; i <= 5; i++) {
+          const starBtn = document.createElement("button");
+          starBtn.type = "button";
+          starBtn.className = "star-btn" + (i <= currentRating ? " filled" : "");
+          starBtn.textContent = "★";
+
+          const label =
+            i === currentRating
+              ? `Rate ${i} star${i > 1 ? "s" : ""} (currently selected - click to clear)`
+              : `Rate ${i} star${i > 1 ? "s" : ""}`;
+          starBtn.setAttribute("aria-label", label);
+
+          // Clicking the same star clears the rating; clicking another sets it
+          starBtn.addEventListener("click", () => {
+            const nextRating = book.rating === i ? 0 : i;
+            updateBookRating(book.id, nextRating);
+          });
+
+          starsGroup.appendChild(starBtn);
+        }
+
+        ratingBar.appendChild(starsGroup);
+        infoDiv.appendChild(ratingBar);
+      }
+
       // Status badge
       const badgeEl = document.createElement("span");
       badgeEl.className = "badge " + getStatusBadgeClass(book.status);
@@ -441,6 +534,7 @@ bookForm.addEventListener("submit", (event) => {
     title: trimmedTitle,
     author: trimmedAuthor,
     status: statusSelect.value,
+    rating: 0,
     createdAt: Date.now()
   };
 
@@ -457,6 +551,26 @@ bookForm.addEventListener("submit", (event) => {
   bookForm.reset();
   titleInput.focus();
 });
+
+// Theme Toggle: switch between light and dark themes
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, nextTheme);
+    applyTheme(nextTheme);
+  });
+}
+
+// Follow system theme changes in real time if user hasn't explicitly set a preference
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if (!localStorage.getItem(THEME_KEY)) {
+    applyTheme(e.matches ? "dark" : "light");
+  }
+});
+
+// Initialize theme on page open
+initTheme();
 
 // Initial render on page open (loads saved books from storage)
 renderBooks();

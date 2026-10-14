@@ -1,4 +1,109 @@
 /* ==========================================================================
+   CSS Custom Properties (Theme Variables)
+   ========================================================================== */
+:root {
+  --bg-page: #f3f4f6;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --text-sub: #4b5563;
+  --border-color: #e5e7eb;
+  --border-input: #d1d5db;
+  --bg-input: #ffffff;
+  --bg-secondary: #f9fafb;
+
+  /* Primary Button */
+  --btn-primary-bg: #2563eb;
+  --btn-primary-hover: #1d4ed8;
+  --btn-primary-text: #ffffff;
+
+  /* Badges */
+  --badge-toread-bg: #fef3c7;
+  --badge-toread-text: #92400e;
+  --badge-reading-bg: #dbeafe;
+  --badge-reading-text: #1e40af;
+  --badge-finished-bg: #d1fae5;
+  --badge-finished-text: #065f46;
+
+  /* Error Banner */
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+  --error-text: #b91c1c;
+
+  /* Edit & Delete Buttons */
+  --btn-edit-bg: #dbeafe;
+  --btn-edit-border: #bfdbfe;
+  --btn-edit-text: #1d4ed8;
+  --btn-edit-hover: #bfdbfe;
+
+  --btn-delete-bg: #fee2e2;
+  --btn-delete-border: #fecaca;
+  --btn-delete-text: #dc2626;
+  --btn-delete-hover: #fecaca;
+
+  /* Filter Tabs */
+  --tab-bg: #ffffff;
+  --tab-border: #d1d5db;
+  --tab-text: #4b5563;
+  --tab-count-bg: rgba(0, 0, 0, 0.08);
+
+  /* Stars */
+  --star-empty: #d1d5db;
+  --star-filled: #f59e0b;
+}
+
+[data-theme="dark"] {
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-sub: #cbd5e1;
+  --border-color: #334155;
+  --border-input: #475569;
+  --bg-input: #0f172a;
+  --bg-secondary: #1e293b;
+
+  /* Primary Button */
+  --btn-primary-bg: #3b82f6;
+  --btn-primary-hover: #2563eb;
+  --btn-primary-text: #ffffff;
+
+  /* Badges */
+  --badge-toread-bg: #78350f;
+  --badge-toread-text: #fde68a;
+  --badge-reading-bg: #1e3a8a;
+  --badge-reading-text: #bfdbfe;
+  --badge-finished-bg: #064e3b;
+  --badge-finished-text: #a7f3d0;
+
+  /* Error Banner */
+  --error-bg: #450a0a;
+  --error-border: #7f1d1d;
+  --error-text: #fca5a5;
+
+  /* Edit & Delete Buttons */
+  --btn-edit-bg: #1e3a8a;
+  --btn-edit-border: #2563eb;
+  --btn-edit-text: #bfdbfe;
+  --btn-edit-hover: #2563eb;
+
+  --btn-delete-bg: #7f1d1d;
+  --btn-delete-border: #991b1b;
+  --btn-delete-text: #fecaca;
+  --btn-delete-hover: #991b1b;
+
+  /* Filter Tabs */
+  --tab-bg: #1e293b;
+  --tab-border: #475569;
+  --tab-text: #cbd5e1;
+  --tab-count-bg: rgba(255, 255, 255, 0.12);
+
+  /* Stars */
+  --star-empty: #475569;
+  --star-filled: #fbbf24;
+}
+
+/* ==========================================================================
    Base Styles & Reset
    ========================================================================== */
 * {
@@ -14,14 +119,15 @@ html, body {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f3f4f6;
-  color: #1f2937;
+  background-color: var(--bg-page);
+  color: var(--text-main);
   line-height: 1.5;
   padding: 2rem 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ==========================================================================
-   Layout Container
+   Layout Container & Header
    ========================================================================== */
 .app-container {
   max-width: 640px;
@@ -36,15 +142,56 @@ body {
   text-align: center;
 }
 
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 0.75rem;
+}
+
 .app-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-main);
   margin-bottom: 0.25rem;
 }
 
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 9999px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--bg-secondary);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
 .subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
@@ -52,18 +199,19 @@ body {
    Card Component & Form
    ========================================================================== */
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .form-section h2 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .form-group {
@@ -76,27 +224,27 @@ body {
 label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-sub);
 }
 
 .required {
   color: #ef4444;
 }
 
-/* Form Inputs & Selects: 16px minimum font size prevents iOS mobile zoom */
+/* Form Inputs & Selects: 16px font-size prevents iOS zoom */
 input[type="text"],
 input[type="search"],
 select {
   width: 100%;
-  min-height: 44px; /* Touch target minimum height */
+  min-height: 44px;
   padding: 0.65rem 0.85rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 16px;
   font-family: inherit;
-  background-color: #ffffff;
-  color: #111827;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 input[type="text"]:focus,
@@ -113,7 +261,7 @@ select:focus {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 44px; /* Touch target minimum height */
+  min-height: 44px;
   padding: 0.75rem 1rem;
   font-size: 16px;
   font-weight: 600;
@@ -124,12 +272,12 @@ select:focus {
 }
 
 .btn-primary {
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
+  background-color: var(--btn-primary-hover);
 }
 
 .btn-primary:active {
@@ -140,9 +288,9 @@ select:focus {
    Error Banner
    ========================================================================== */
 .error-banner {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
   padding: 0.75rem 0.85rem;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -164,7 +312,7 @@ select:focus {
 .list-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .search-box {
@@ -175,13 +323,13 @@ select:focus {
 
 /* Stats Summary */
 .stats-summary {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.65rem 0.9rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-sub);
   margin-bottom: 0.75rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
@@ -198,11 +346,11 @@ select:focus {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  min-height: 44px; /* Touch friendly */
+  min-height: 44px;
   padding: 0.4rem 0.85rem;
-  background-color: #ffffff;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
+  background-color: var(--tab-bg);
+  color: var(--tab-text);
+  border: 1px solid var(--tab-border);
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -212,14 +360,14 @@ select:focus {
 }
 
 .tab-btn:hover {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
-  color: #111827;
+  background-color: var(--bg-secondary);
+  border-color: var(--text-muted);
+  color: var(--text-main);
 }
 
 .tab-btn.active {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
   color: #ffffff;
 }
 
@@ -227,7 +375,7 @@ select:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: var(--tab-count-bg);
   color: inherit;
   font-size: 0.75rem;
   font-weight: 600;
@@ -257,10 +405,10 @@ select:focus {
 .empty-state {
   text-align: center;
   padding: 2.5rem 1rem;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 12px;
-  border: 1px dashed #d1d5db;
-  color: #6b7280;
+  border: 1px dashed var(--border-input);
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
@@ -272,8 +420,8 @@ select:focus {
 }
 
 .book-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -281,27 +429,28 @@ select:focus {
   align-items: center;
   gap: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .book-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  min-width: 0; /* Prevents flexbox text blowout */
+  min-width: 0;
   width: 100%;
 }
 
 .book-title {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #111827;
-  overflow-wrap: anywhere; /* Wraps very long unspaced text at any boundary */
+  color: var(--text-main);
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
 .book-author {
   font-size: 0.875rem;
-  color: #4b5563;
+  color: var(--text-sub);
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -318,22 +467,22 @@ select:focus {
 }
 
 .badge-to-read {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--badge-toread-bg);
+  color: var(--badge-toread-text);
 }
 
 .badge-reading {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--badge-reading-bg);
+  color: var(--badge-reading-text);
 }
 
 .badge-finished {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--badge-finished-bg);
+  color: var(--badge-finished-text);
 }
 
 /* ==========================================================================
-   Book Actions (Badge, Dropdown, Delete)
+   Book Actions (Badge, Dropdown, Edit, Delete)
    ========================================================================== */
 .book-actions {
   display: flex;
@@ -345,28 +494,80 @@ select:focus {
 .status-select {
   width: auto;
   min-width: 110px;
-  min-height: 44px; /* Touch target size */
+  min-height: 44px;
   padding: 0.4rem 0.65rem;
   font-size: 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-input);
   border-radius: 6px;
-  background-color: #f9fafb;
-  color: #374151;
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
   cursor: pointer;
   font-family: inherit;
   transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .status-select:hover {
-  background-color: #ffffff;
-  border-color: #9ca3af;
+  background-color: var(--bg-input);
+  border-color: var(--text-muted);
 }
 
 .status-select:focus {
   outline: none;
   border-color: #3b82f6;
-  background-color: #ffffff;
+  background-color: var(--bg-input);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Star Rating (Finished Books) */
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.rating-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stars-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--star-empty);
+  padding: 0.15rem;
+  min-width: 36px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+
+.star-btn:hover {
+  color: var(--star-filled);
+  transform: scale(1.15);
+}
+
+.star-btn.filled {
+  color: var(--star-filled);
+}
+
+.star-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 /* Delete & Edit Buttons */
@@ -374,50 +575,44 @@ select:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px; /* Minimum 44px touch target */
+  min-height: 44px;
   min-width: 44px;
   padding: 0.4rem 0.75rem;
   font-size: 0.85rem;
   font-weight: 600;
   font-family: inherit;
-  color: #1d4ed8;
-  background-color: #dbeafe;
-  border: 1px solid #bfdbfe;
+  color: var(--btn-edit-text);
+  background-color: var(--btn-edit-bg);
+  border: 1px solid var(--btn-edit-border);
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn-edit:hover {
-  background-color: #bfdbfe;
-  color: #1e40af;
+  background-color: var(--btn-edit-hover);
 }
 
 .btn-delete {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px; /* Minimum 44px touch target */
+  min-height: 44px;
   min-width: 44px;
   padding: 0.4rem 0.75rem;
   font-size: 0.85rem;
   font-weight: 600;
   font-family: inherit;
-  color: #dc2626;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
+  color: var(--btn-delete-text);
+  background-color: var(--btn-delete-bg);
+  border: 1px solid var(--btn-delete-border);
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn-delete:hover {
-  background-color: #fecaca;
-  color: #b91c1c;
-}
-
-.btn-delete:active {
-  background-color: #fca5a5;
+  background-color: var(--btn-delete-hover);
 }
 
 /* Inline Edit Card View */
@@ -429,9 +624,9 @@ select:focus {
 }
 
 .card-edit-error {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
   padding: 0.45rem 0.65rem;
   border-radius: 6px;
   font-size: 0.825rem;
@@ -441,12 +636,12 @@ select:focus {
   width: 100%;
   min-height: 40px;
   padding: 0.45rem 0.65rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-input);
   border-radius: 6px;
-  font-size: 16px; /* 16px prevents mobile zoom */
+  font-size: 16px;
   font-family: inherit;
-  background-color: #ffffff;
-  color: #111827;
+  background-color: var(--bg-input);
+  color: var(--text-main);
 }
 
 .edit-input:focus {
@@ -491,8 +686,8 @@ select:focus {
   font-size: 0.875rem;
   font-weight: 600;
   font-family: inherit;
-  color: #4b5563;
-  background-color: #e5e7eb;
+  color: var(--text-main);
+  background-color: var(--border-color);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -500,7 +695,7 @@ select:focus {
 }
 
 .btn-cancel:hover {
-  background-color: #d1d5db;
+  background-color: var(--border-input);
 }
 
 /* ==========================================================================
