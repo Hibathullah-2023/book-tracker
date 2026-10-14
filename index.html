@@ -12,12 +12,12 @@
   <main class="app-container">
     <header class="app-header">
       <div class="header-top">
-        <h1>📚 Book Tracker</h1>
+        <h1>Book Tracker</h1>
         <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">
-          <span id="theme-icon" aria-hidden="true">🌙</span>
+          <span id="theme-icon" class="theme-icon" aria-hidden="true">🌙</span>
         </button>
       </div>
-      <p class="subtitle">Keep track of what you read</p>
+      <p class="subtitle">Your reading list, in one place</p>
     </header>
 
     <!-- Form Section: Add a new book -->
@@ -115,13 +115,22 @@
 
       <!-- Friendly message shown when no books are in the tracker at all -->
       <div id="empty-state" class="empty-state">
-        <span class="empty-icon" aria-hidden="true">📖</span>
-        <p>No books yet. Add your first book using the form above!</p>
+        <svg class="empty-svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+          <path d="M6 6h10"></path>
+          <path d="M6 10h10"></path>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        </svg>
+        <p class="empty-title">No books yet.</p>
+        <p class="empty-hint">Use the form above to add your first book.</p>
       </div>
 
       <!-- Message shown when search or filter returns zero matches -->
       <div id="no-results-state" class="empty-state" hidden>
-        <span class="empty-icon" aria-hidden="true">🔍</span>
+        <svg class="empty-svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
         <p id="no-results-text">No books match your filters.</p>
       </div>
 
