@@ -2,9 +2,7 @@
 
 A clean, cozy, and accessible personal reading list tracker designed to keep track of what you read in one place. Built with zero dependencies using plain HTML, CSS, and Vanilla JavaScript with browser local storage.
 
-[Live Demo](https://your-username.github.io/book_tracker) *(Replace with your deployment link)*
-
----
+[Live Demo](https://hibathullah-2023.github.io/book-tracker/)
 
 ## Features
 
