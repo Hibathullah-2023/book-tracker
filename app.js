@@ -137,6 +137,14 @@ function clearError() {
   formError.hidden = true;
 }
 
+// Clear the add-form error message as soon as the user starts typing
+if (titleInput) {
+  titleInput.addEventListener("input", clearError);
+}
+if (authorInput) {
+  authorInput.addEventListener("input", clearError);
+}
+
 // Helper: Get CSS class for status badges ("To read" -> "badge-to-read")
 function getStatusBadgeClass(status) {
   switch (status) {
