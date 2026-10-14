@@ -185,12 +185,12 @@ function updateBookStatus(bookId, newStatus) {
   if (newStatus === "Finished") {
     // If transitioning into Finished from another status, start with no rating and fresh finishedAt
     if (bookToUpdate.status !== "Finished") {
-      bookToUpdate.rating = 0;
+      delete bookToUpdate.rating;
       bookToUpdate.finishedAt = Date.now();
     }
   } else {
     // If status changes away from Finished, remove rating and finishedAt
-    bookToUpdate.rating = 0;
+    delete bookToUpdate.rating;
     delete bookToUpdate.finishedAt;
   }
 
@@ -247,8 +247,12 @@ function updateBookRating(bookId, newRating) {
     return;
   }
 
-  // Update rating
-  bookToUpdate.rating = newRating;
+  // Update rating (store if 1-5, remove key if cleared)
+  if (newRating) {
+    bookToUpdate.rating = newRating;
+  } else {
+    delete bookToUpdate.rating;
+  }
 
   // Persist immediately to localStorage
   saveBooks();
@@ -665,11 +669,13 @@ bookForm.addEventListener("submit", (event) => {
     title: trimmedTitle,
     author: trimmedAuthor,
     status: statusSelect.value,
-    rating: 0,
     notes: trimmedNotes,
-    finishedAt: isFinished ? Date.now() : null,
     createdAt: Date.now()
   };
+
+  if (isFinished) {
+    newBook.finishedAt = Date.now();
+  }
 
   // Add the new book to the front of the master array (newest first)
   books.unshift(newBook);
