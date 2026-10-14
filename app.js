@@ -1,5 +1,8 @@
 // ==========================================================================
-// Step 7: Book Tracker with Inline Edit (Title & Author)
+// Book Tracker Application
+// Features: add, list, live search, status filter tabs, status change,
+// inline edit, delete with confirmation, reading counts, short notes,
+// 1-5 star ratings, finished dates, dark mode, and localStorage persistence.
 // ==========================================================================
 
 // Key name used to store book data in browser localStorage
