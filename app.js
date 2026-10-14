@@ -159,14 +159,16 @@ function updateBookStatus(bookId, newStatus) {
     return;
   }
 
-  // If changing to Finished, record timestamp
+  // Handle status transitions to/from Finished
   if (newStatus === "Finished") {
-    // Only set finishedAt if it wasn't already finished or missing
-    if (bookToUpdate.status !== "Finished" || !bookToUpdate.finishedAt) {
+    // If transitioning into Finished from another status, start with no rating and fresh finishedAt
+    if (bookToUpdate.status !== "Finished") {
+      bookToUpdate.rating = 0;
       bookToUpdate.finishedAt = Date.now();
     }
   } else {
-    // If status changes away from Finished, remove finishedAt
+    // If status changes away from Finished, remove rating and finishedAt
+    bookToUpdate.rating = 0;
     delete bookToUpdate.finishedAt;
   }
 
@@ -308,7 +310,8 @@ function renderBooks() {
   // 5. Build and display each visible book card (newest first)
   visibleBooks.forEach((book) => {
     const li = document.createElement("li");
-    li.className = "book-card";
+    const statusSlug = book.status.toLowerCase().replace(/\s+/g, "-");
+    li.className = "book-card status-card-" + statusSlug;
 
     // ------------------------------------------------------------------
     // Case A: Book is currently in EDIT mode

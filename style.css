@@ -1,78 +1,105 @@
 /* ==========================================================================
-   CSS Custom Properties (Theme Variables)
+   CSS Custom Properties (Cozy Personal Library Palette)
    ========================================================================== */
 :root {
-  --bg-page: #f3f4f6;
+  /* Warm, literary light palette (parchment & bookbinder tones) */
+  --bg-page: #f8f6f0;
   --bg-card: #ffffff;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --text-sub: #4b5563;
-  --border-color: #e5e7eb;
-  --border-input: #d1d5db;
+  --bg-secondary: #f2eee5;
   --bg-input: #ffffff;
-  --bg-secondary: #f9fafb;
 
-  /* Primary Button */
-  --btn-primary-bg: #2563eb;
-  --btn-primary-hover: #1d4ed8;
-  --btn-primary-text: #ffffff;
+  --text-main: #2b2523;
+  --text-sub: #544c46;
+  --text-muted: #7f746b;
 
-  /* Badges */
+  --border-color: #e5ded3;
+  --border-input: #d3cabd;
+
+  /* Primary Accent: Rich terracotta bookcloth */
+  --accent: #944e31;
+  --accent-hover: #7d3f25;
+  --accent-focus-ring: rgba(148, 78, 49, 0.22);
+
+  /* Status Colors */
+  --status-toread: #c27803;
   --badge-toread-bg: #fef3c7;
   --badge-toread-text: #92400e;
+
+  --status-reading: #2563eb;
   --badge-reading-bg: #dbeafe;
   --badge-reading-text: #1e40af;
+
+  --status-finished: #059669;
   --badge-finished-bg: #d1fae5;
   --badge-finished-text: #065f46;
 
   /* Error Banner */
   --error-bg: #fef2f2;
   --error-border: #fecaca;
-  --error-text: #b91c1c;
+  --error-text: #991b1b;
 
-  /* Edit & Delete Buttons */
-  --btn-edit-bg: #dbeafe;
-  --btn-edit-border: #bfdbfe;
-  --btn-edit-text: #1d4ed8;
-  --btn-edit-hover: #bfdbfe;
+  /* Buttons */
+  --btn-primary-bg: #944e31;
+  --btn-primary-hover: #7d3f25;
+  --btn-primary-text: #ffffff;
 
-  --btn-delete-bg: #fee2e2;
+  --btn-edit-bg: #eef2ff;
+  --btn-edit-border: #c7d2fe;
+  --btn-edit-text: #3730a3;
+  --btn-edit-hover: #e0e7ff;
+
+  --btn-delete-bg: #fdf2f2;
   --btn-delete-border: #fecaca;
-  --btn-delete-text: #dc2626;
-  --btn-delete-hover: #fecaca;
+  --btn-delete-text: #991b1b;
+  --btn-delete-hover: #fee2e2;
+
+  --btn-cancel-bg: #e5ded3;
+  --btn-cancel-text: #443e39;
 
   /* Filter Tabs */
   --tab-bg: #ffffff;
-  --tab-border: #d1d5db;
-  --tab-text: #4b5563;
-  --tab-count-bg: rgba(0, 0, 0, 0.08);
+  --tab-border: #d3cabd;
+  --tab-text: #544c46;
+  --tab-count-bg: rgba(0, 0, 0, 0.07);
 
-  /* Stars */
-  --star-empty: #d1d5db;
-  --star-filled: #f59e0b;
+  /* Star Rating */
+  --star-empty: #d3cabd;
+  --star-filled: #d97706;
+
+  /* Typography Stacks (No external dependencies) */
+  --font-serif: "Georgia", "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 [data-theme="dark"] {
-  --bg-page: #0f172a;
-  --bg-card: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-sub: #cbd5e1;
-  --border-color: #334155;
-  --border-input: #475569;
-  --bg-input: #0f172a;
-  --bg-secondary: #1e293b;
+  /* Moody dark walnut & antique paper library palette */
+  --bg-page: #171513;
+  --bg-card: #23201d;
+  --bg-secondary: #2b2724;
+  --bg-input: #171513;
 
-  /* Primary Button */
-  --btn-primary-bg: #3b82f6;
-  --btn-primary-hover: #2563eb;
-  --btn-primary-text: #ffffff;
+  --text-main: #f5ede2;
+  --text-sub: #c9bfb4;
+  --text-muted: #94897e;
 
-  /* Badges */
-  --badge-toread-bg: #78350f;
+  --border-color: #3a3530;
+  --border-input: #4c4640;
+
+  /* Warm copper accent */
+  --accent: #d97443;
+  --accent-hover: #e98251;
+  --accent-focus-ring: rgba(217, 116, 67, 0.28);
+
+  /* Status Colors (Dark mode) */
+  --status-toread: #f59e0b;
+  --badge-toread-bg: #451a03;
   --badge-toread-text: #fde68a;
+
+  --status-reading: #60a5fa;
   --badge-reading-bg: #1e3a8a;
   --badge-reading-text: #bfdbfe;
+
+  --status-finished: #34d399;
   --badge-finished-bg: #064e3b;
   --badge-finished-text: #a7f3d0;
 
@@ -81,26 +108,33 @@
   --error-border: #7f1d1d;
   --error-text: #fca5a5;
 
-  /* Edit & Delete Buttons */
-  --btn-edit-bg: #1e3a8a;
-  --btn-edit-border: #2563eb;
-  --btn-edit-text: #bfdbfe;
-  --btn-edit-hover: #2563eb;
+  /* Buttons */
+  --btn-primary-bg: #d97443;
+  --btn-primary-hover: #e98251;
+  --btn-primary-text: #ffffff;
 
-  --btn-delete-bg: #7f1d1d;
-  --btn-delete-border: #991b1b;
-  --btn-delete-text: #fecaca;
-  --btn-delete-hover: #991b1b;
+  --btn-edit-bg: #1e1b4b;
+  --btn-edit-border: #3730a3;
+  --btn-edit-text: #c7d2fe;
+  --btn-edit-hover: #312e81;
+
+  --btn-delete-bg: #450a0a;
+  --btn-delete-border: #7f1d1d;
+  --btn-delete-text: #fca5a5;
+  --btn-delete-hover: #7f1d1d;
+
+  --btn-cancel-bg: #3a3530;
+  --btn-cancel-text: #f5ede2;
 
   /* Filter Tabs */
-  --tab-bg: #1e293b;
-  --tab-border: #475569;
-  --tab-text: #cbd5e1;
+  --tab-bg: #23201d;
+  --tab-border: #4c4640;
+  --tab-text: #c9bfb4;
   --tab-count-bg: rgba(255, 255, 255, 0.12);
 
-  /* Stars */
-  --star-empty: #475569;
-  --star-filled: #fbbf24;
+  /* Star Rating */
+  --star-empty: #4c4640;
+  --star-filled: #f59e0b;
 }
 
 /* ==========================================================================
@@ -118,24 +152,24 @@ html, body {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg-page);
   color: var(--text-main);
-  line-height: 1.5;
-  padding: 2rem 1rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  line-height: 1.55;
+  padding: 2.5rem 1.25rem;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 /* ==========================================================================
    Layout Container & Header
    ========================================================================== */
 .app-container {
-  max-width: 640px;
+  max-width: 800px;
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 2rem;
 }
 
 .app-header {
@@ -151,8 +185,10 @@ body {
 }
 
 .app-header h1 {
-  font-size: 2rem;
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-main);
   margin-bottom: 0.25rem;
 }
@@ -174,7 +210,8 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 120ms ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .theme-toggle-btn:hover {
@@ -186,13 +223,15 @@ body {
 }
 
 .theme-toggle-btn:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 .subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
 }
 
 /* ==========================================================================
@@ -200,25 +239,27 @@ body {
    ========================================================================== */
 .card {
   background: var(--bg-card);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), 0 1px 3px -1px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--border-color);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 180ms ease, border-color 180ms ease;
 }
 
 .form-section h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.15rem;
   color: var(--text-main);
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 label {
@@ -228,10 +269,10 @@ label {
 }
 
 .required {
-  color: #ef4444;
+  color: #dc2626;
 }
 
-/* Form Inputs & Selects: 16px font-size prevents iOS zoom */
+/* Form Inputs & Selects: 16px font prevents mobile zoom */
 input[type="text"],
 input[type="search"],
 select,
@@ -245,12 +286,13 @@ textarea {
   font-family: inherit;
   background-color: var(--bg-input);
   color: var(--text-main);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease, color 180ms ease;
 }
 
 textarea {
-  min-height: 75px;
+  min-height: 80px;
   resize: vertical;
+  line-height: 1.45;
 }
 
 input[type="text"]:focus,
@@ -258,8 +300,8 @@ input[type="search"]:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-focus-ring);
 }
 
 .label-row {
@@ -293,12 +335,13 @@ textarea:focus {
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.05s ease;
+  transition: background-color 180ms ease, transform 100ms ease, box-shadow 180ms ease;
 }
 
 .btn-primary {
   background-color: var(--btn-primary-bg);
   color: var(--btn-primary-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary:hover {
@@ -307,6 +350,11 @@ textarea:focus {
 
 .btn-primary:active {
   transform: scale(0.99);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -319,6 +367,7 @@ textarea:focus {
   padding: 0.75rem 0.85rem;
   border-radius: 8px;
   font-size: 0.9rem;
+  font-weight: 500;
   margin-bottom: 1rem;
 }
 
@@ -331,48 +380,50 @@ textarea:focus {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .list-header h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-main);
 }
 
 .search-box {
   flex: 1;
-  min-width: 200px;
-  max-width: 280px;
+  min-width: 220px;
+  max-width: 320px;
 }
 
-/* Stats Summary */
+/* Stats Summary Banner */
 .stats-summary {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  padding: 0.65rem 0.95rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-sub);
-  margin-bottom: 0.75rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  margin-bottom: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* Status Filter Tabs */
+/* Status Filter Tabs (Pill / Chip style) */
 .filter-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   min-height: 44px;
-  padding: 0.4rem 0.85rem;
+  padding: 0.4rem 0.95rem;
   background-color: var(--tab-bg);
   color: var(--tab-text);
   border: 1px solid var(--tab-border);
@@ -381,7 +432,7 @@ textarea:focus {
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 100ms ease;
 }
 
 .tab-btn:hover {
@@ -394,6 +445,12 @@ textarea:focus {
   background-color: var(--btn-primary-bg);
   border-color: var(--btn-primary-bg);
   color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .tab-count {
@@ -406,7 +463,7 @@ textarea:focus {
   font-weight: 600;
   border-radius: 9999px;
   padding: 0.1rem 0.5rem;
-  min-width: 1.25rem;
+  min-width: 1.3rem;
 }
 
 .tab-btn.active .tab-count {
@@ -414,7 +471,7 @@ textarea:focus {
   color: #ffffff;
 }
 
-/* Accessible hidden label for screen readers */
+/* Accessible hidden label */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -427,34 +484,65 @@ textarea:focus {
   border: 0;
 }
 
+/* Empty State: Friendly with large icon */
 .empty-state {
   text-align: center;
-  padding: 2.5rem 1rem;
+  padding: 3rem 1.5rem;
   background: var(--bg-card);
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px dashed var(--border-input);
   color: var(--text-muted);
   font-size: 0.95rem;
 }
 
+.empty-icon {
+  display: block;
+  font-size: 2.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   Book Cards (With Left Status Accent Stripe & Gentle Hover)
+   ========================================================================== */
 .book-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 .book-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
+  border-left: 5px solid var(--border-color); /* Default status accent stripe */
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  gap: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+/* Colored accent stripe on left edge according to reading status */
+.book-card.status-card-to-read {
+  border-left-color: var(--status-toread);
+}
+
+.book-card.status-card-reading {
+  border-left-color: var(--status-reading);
+}
+
+.book-card.status-card-finished {
+  border-left-color: var(--status-finished);
+}
+
+/* Gentle hover elevation */
+.book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
 }
 
 .book-info {
@@ -466,33 +554,19 @@ textarea:focus {
 }
 
 .book-title {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--text-main);
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
 .book-author {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--text-sub);
   overflow-wrap: anywhere;
   word-break: break-word;
-}
-
-/* Book Card Notes */
-.book-notes {
-  font-size: 0.875rem;
-  color: var(--text-sub);
-  background-color: var(--bg-secondary);
-  border-left: 3px solid #3b82f6;
-  padding: 0.45rem 0.75rem;
-  border-radius: 0 6px 6px 0;
-  margin-top: 0.35rem;
-  white-space: pre-wrap; /* Keeps line breaks readable */
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  line-height: 1.45;
 }
 
 /* Finished Date */
@@ -501,6 +575,21 @@ textarea:focus {
   color: var(--text-muted);
   font-weight: 500;
   margin-top: 0.15rem;
+}
+
+/* Book Card Notes Callout */
+.book-notes {
+  font-size: 0.875rem;
+  color: var(--text-sub);
+  background-color: var(--bg-secondary);
+  border-left: 3px solid var(--accent);
+  padding: 0.5rem 0.8rem;
+  border-radius: 0 6px 6px 0;
+  margin-top: 0.4rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
 }
 
 /* Status Badges */
@@ -546,12 +635,12 @@ textarea:focus {
   padding: 0.4rem 0.65rem;
   font-size: 14px;
   border: 1px solid var(--border-input);
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: var(--bg-secondary);
   color: var(--text-main);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 
 .status-select:hover {
@@ -561,9 +650,9 @@ textarea:focus {
 
 .status-select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--accent);
   background-color: var(--bg-input);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px var(--accent-focus-ring);
 }
 
 /* Star Rating (Finished Books) */
@@ -601,7 +690,7 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: color 0.15s ease, transform 0.1s ease;
+  transition: color 180ms ease, transform 100ms ease;
 }
 
 .star-btn:hover {
@@ -614,60 +703,71 @@ textarea:focus {
 }
 
 .star-btn:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Delete & Edit Buttons */
+/* Edit & Delete Buttons */
 .btn-edit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   font-weight: 600;
   font-family: inherit;
   color: var(--btn-edit-text);
   background-color: var(--btn-edit-bg);
   border: 1px solid var(--btn-edit-border);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .btn-edit:hover {
   background-color: var(--btn-edit-hover);
 }
 
+.btn-edit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Delete Button: clearly distinct muted red */
 .btn-delete {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   font-weight: 600;
   font-family: inherit;
   color: var(--btn-delete-text);
   background-color: var(--btn-delete-bg);
   border: 1px solid var(--btn-delete-border);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .btn-delete:hover {
   background-color: var(--btn-delete-hover);
 }
 
+.btn-delete:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
 /* Inline Edit Card View */
 .edit-form-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
   width: 100%;
 }
 
@@ -685,7 +785,7 @@ textarea:focus {
   min-height: 40px;
   padding: 0.45rem 0.65rem;
   border: 1px solid var(--border-input);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 16px;
   font-family: inherit;
   background-color: var(--bg-input);
@@ -694,8 +794,8 @@ textarea:focus {
 
 .edit-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-focus-ring);
 }
 
 .edit-actions {
@@ -709,20 +809,25 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 600;
   font-family: inherit;
   color: #ffffff;
-  background-color: #16a34a;
+  background-color: #059669;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 180ms ease;
 }
 
 .btn-save:hover {
-  background-color: #15803d;
+  background-color: #047857;
+}
+
+.btn-save:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
 }
 
 .btn-cancel {
@@ -730,36 +835,53 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 600;
   font-family: inherit;
-  color: var(--text-main);
-  background-color: var(--border-color);
+  color: var(--btn-cancel-text);
+  background-color: var(--btn-cancel-bg);
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 180ms ease;
 }
 
 .btn-cancel:hover {
   background-color: var(--border-input);
 }
 
+.btn-cancel:focus-visible {
+  outline: 2px solid var(--text-sub);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Accessibility: Reduced Motion Preference
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ==========================================================================
    Mobile Responsive Layout (down to 360px and below)
    ========================================================================== */
-@media (max-width: 540px) {
+@media (max-width: 560px) {
   body {
-    padding: 1rem 0.75rem;
+    padding: 1.25rem 0.85rem;
   }
 
   .app-container {
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .app-header h1 {
-    font-size: 1.75rem;
+    font-size: 1.85rem;
   }
 
   .card {
@@ -780,7 +902,7 @@ textarea:focus {
   .book-card {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.85rem;
+    gap: 0.95rem;
     padding: 1rem;
   }
 

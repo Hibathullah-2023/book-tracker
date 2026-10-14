@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Tracker</title>
-  <!-- Google Font: Inter for modern, clean typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Inline SVG Book Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,7 +17,7 @@
           <span id="theme-icon" aria-hidden="true">🌙</span>
         </button>
       </div>
-      <p class="subtitle">Keep track of the books you want to read, are reading, or have finished.</p>
+      <p class="subtitle">Keep track of what you read</p>
     </header>
 
     <!-- Form Section: Add a new book -->
@@ -117,11 +115,13 @@
 
       <!-- Friendly message shown when no books are in the tracker at all -->
       <div id="empty-state" class="empty-state">
+        <span class="empty-icon" aria-hidden="true">📖</span>
         <p>No books yet. Add your first book using the form above!</p>
       </div>
 
       <!-- Message shown when search or filter returns zero matches -->
       <div id="no-results-state" class="empty-state" hidden>
+        <span class="empty-icon" aria-hidden="true">🔍</span>
         <p id="no-results-text">No books match your filters.</p>
       </div>
 
